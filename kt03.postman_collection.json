@@ -1,0 +1,178 @@
+{
+  "info": {
+    "name": "КТ 3 — Blog API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "userId",
+      "value": ""
+    },
+    {
+      "key": "postId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Создать пользователя",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/users",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"von@example.com\",\n  \"name\": \"Von\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "  pm.collectionVariables.set(\"userId\", pm.response.json().id);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Список пользователей",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/users?page=1&limit=5"
+      }
+    },
+    {
+      "name": "3. Обновить пользователя",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/api/users/{{userId}}",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Von\",\n  \"role\": \"ADMIN\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "4. Создать пост",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/posts",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Первый пост про Prisma\",\n  \"content\": \"Проверка работы API\",\n  \"published\": true,\n  \"authorId\": {{userId}},\n  \"tags\": [\n    \"Prisma\",\n    \"Node.js\"\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "  pm.collectionVariables.set(\"postId\", pm.response.json().id);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Посты с фильтрами",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/posts?search=PRISMA&published=true&authorId={{userId}}&page=1&limit=5"
+      }
+    },
+    {
+      "name": "6. Пост с автором и тегами",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/posts/{{postId}}"
+      }
+    },
+    {
+      "name": "7. Пользователь с постами",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/users/{{userId}}"
+      }
+    },
+    {
+      "name": "8. Обновить пост",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/api/posts/{{postId}}",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"published\": false,\n  \"tags\": [\n    \"Prisma\",\n    \"SQLite\"\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "9. Удалить пост",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/api/posts/{{postId}}"
+      }
+    },
+    {
+      "name": "10. Удалить пользователя",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/api/users/{{userId}}"
+      }
+    }
+  ]
+}
